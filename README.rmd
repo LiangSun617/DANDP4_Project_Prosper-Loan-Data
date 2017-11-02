@@ -1,4 +1,6 @@
-Exploration of Prosper Loan Data by Liang Sun
+# Exploration of Prosper Loan Data
+### Liang Sun
+### October 26, 2017
 ========================================================
 
 
@@ -16,13 +18,15 @@ prosper_loan <- read.csv("prosperLoanData.csv")
 # overview
 dim(prosper_loan)
 ```
+
 ![pic1](/image/1.png)
+
 
 ```{r}
 # check the names of variables
 names(prosper_loan)
-
 ```
+
 ![pic2](/image/2.png)
 
 
@@ -41,8 +45,7 @@ Therefore, I am going to examine their relationship with borrower's interest rat
 
 A subset of the original data is created by including the following variables:
 
-```{r echo=FALSE}
-
+```{r}
 #The "Listing Category numeric" variable needs to be converted into factor variable and labeled:
 
 prosper_loan$ListingCategory <- factor(prosper_loan$ListingCategory..numeric.,
@@ -61,124 +64,106 @@ myvars<- c("ProsperScore","BorrowerRate","ListingCategory",
             "Term", "DebtToIncomeRatio", "IncomeRange")
 newdata <- prosper_loan[myvars]
 
-
-
-
 str(newdata)
-
 ```
+
+![pic3](/image/3.png)
+
 
 The variable "Listing Category" has been converted from numeric to categorical in the data.
 
 
-```{r echo=FALSE}
+```{r}
 summary(newdata)
-
 ```
+![pic4](/image/4.png)
 
 
-
-```{r echo=FALSE}
-
-
+```{r}
 # Borrower rate(interest rate)
 ggplot(aes(x = BorrowerRate), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 0.01) +
   labs(title = "Distribution of Borrower's Interest Rate") +
   labs(x = "Borrower's interest rate", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5))
-
-
-
 ```
+![pic5](/image/5.png)
 
 The distribution of borrower's interest rate appears bimodal with the rate peaking around 0.16 and 0.32. I also wonder how the count of cases vary across categorical variables such as listing category and income range:
 
-```{r echo=FALSE}
-
-
-
+```{r}
 # Borrower rate(interest rate)
 ggplot(aes(x = (ListingCategory)), data = newdata) +
   geom_bar(col = 'black', fill = 'gray') +
   labs(title = "Distribution of Listing Category") +
   labs(x = "Listing Category", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5)) + coord_flip()
-
-
-
 ```
 
+![pic6](/image/6.png)
 
-
-```{r echo=FALSE}
-
+```{r}
 newdata$IncomeRange =factor(newdata$IncomeRange,levels(newdata$IncomeRange)
                             [c(7,8,1,2,4,5,6,3)])
-
 
 ggplot(aes(x = (IncomeRange)), data = newdata) +
   geom_bar(col = 'black', fill = 'gray') +
   labs(title = "Distribution of Income Range") +
   labs(x = "Income Range", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5)) + coord_flip()
-
-
-
 ```
+
+![pic7](/image/7.png)
 
 Most loans are for debt consolidation by borrowers who are employed and have medium level of income.  
 
 In addition to categorical variables, I also examine continuous variables:
 
-```{r echo=FALSE, message=FALSE, warning= FALSE}
+```{r}
 
 newdata$ProsperScore <- factor(newdata$ProsperScore,
                                levels=c(1,2,3,4,5,6,7,8,9,10,11),
                                ordered=TRUE)
-
 
 ggplot(aes(x = (ProsperScore)), data = newdata) +
   geom_bar(col = 'black', fill = 'gray') +
   labs(title = "Distribution of Prosper Score") +
   labs(x = "Prosper Score", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5))
-
-
-
 ```
+![pic8](/image/8.png)
 
-```{r echo=FALSE, message=FALSE, warning= FALSE}
+
+```{r}
 summary(newdata$ProsperScore)
-
 ```
+![pic9](/image/9.png)
 
 Prosper scores are actually integers between 1 and 11, and are approximately normally distributed.
 
-
-```{r echo=FALSE, message=FALSE, warning= FALSE}
+```{r}
 
 ggplot(aes(x = (CreditScoreRangeLower)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 20) +
   labs(title = "Distribution of Credit Score") +
   labs(x = "Credit Score", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5))
-
-
-
 ```
+![pic10](/image/10.png)
+
 
 ```{r}
 summary(newdata$CreditScoreRangeLower)
-
 ```
+![pic11](/image/11.png)
+
 
 The lowest credit score is 0 and the highest credit score is 880. Most borrowers have a credit score between 660 and 720 or so.
 
 Let's zoom in by excluding the outliers with 0 value:
 
 
-```{r echo=FALSE, message=FALSE,warning=FALSE}
+```{r}
 newdata<-prosper_loan[myvars]
 ggplot(aes(x = (CreditScoreRangeLower)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray',binwidth=10) +
@@ -186,35 +171,31 @@ ggplot(aes(x = (CreditScoreRangeLower)), data = newdata) +
   labs(x = "Credit Score", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_x_continuous(limits = c(400, 900))
-
 ```
+![pic12](/image/12.png)
 
 It is obvious now that the credit scores reported in this data are all even numbers and have an approximately normal distribution.
 
-
-
-```{r echo=FALSE}
-
+```{r}
 ggplot(aes(x = (LoanOriginalAmount)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 1000) +
   labs(title = "Distribution of Loan Amount") +
   labs(x = "Loan Amount", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5))  
-
-
 ```
+![pic13](/image/13.png)
 
 
-```{r echo=FALSE}
-
+```{r}
 summary(newdata$LoanOriginalAmount)
-
 ```
+![pic14](/image/14.png)
+
+
 Most loans have an amount of 4000, 10,000 or 15,000 dolloars.
 
 
-```{r echo=FALSE,message=FALSE}
-
+```{r}
 # Term is distrete, so factorize it
 newdata$Term <- factor(newdata$Term, levels=c(12,36,60), ordered=TRUE)
 
@@ -222,58 +203,54 @@ ggplot(aes(x = Term), data = newdata) +
   geom_bar() +
   labs(title = "Distribution of Loan Term") +
   labs(x = "Loan Term", y = "Count")  
-
-
 ```
+![pic15](/image/15.png)
 
 The loan terms are integers, which are 12, 36, and 60 months (1, 3, and 5 years).Most borrowers take 3-year loan.
 
-
-```{r echo=FALSE, warning=FALSE}
-
+```{r}
 ggplot(aes(x = (DebtToIncomeRatio)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 0.1) +
   labs(title = "Distribution of Debt-to-Income Ratio") +
   labs(x = "Debt-to-Income Ratio", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5))  
-
 ```
+![pic16](/image/16.png)
 
 
 There are a few high outliers. Let's zoom in on the left part of the distribution:
 
 ```{r echo=FALSE,warning=FALSE}
-
 ggplot(aes(x = (DebtToIncomeRatio)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 0.02) +
   labs(title = "Distribution of Debt-to-Income Ratio") +
   labs(x = "Debt-to-Income Ratio", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_x_continuous(limits=c(0,1.5))
-
 ```
+
+![pic17](/image/17.png)
+
 
 It is still right skewed. Let's take a log transformation of it:
 
-```{r echo=FALSE,warning=FALSE}
-
+```{r}
 #transform
-
 ggplot(aes(x = (DebtToIncomeRatio)), data = newdata) +
   geom_histogram(col = 'black', fill = 'gray', binwidth = 0.05) +
   labs(title = "Distribution of Debt-to-Income Ratio") +
   labs(x = "Debt-to-Income Ratio", y = 'Count') +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_x_log10()
-
-
-
 ```
-```{r echo=FALSE}
+![pic18](/image/18.png)
 
+
+
+```{r}
 summary(newdata$DebtToIncomeRatio)
-
 ```
+![pic19](/image/19.png)
 
 Most borrowers have a debt-to-income ratio between 0.14 and 0.32.
 
@@ -349,67 +326,69 @@ I log-transformed the right skewed debt-to-income ratio distribution. The transf
 First, I wonder how the borrower's interest rate would vary by listing category:
 
 
-```{r echo=FALSE}
+```{r}
 
 ggplot(newdata, aes(x=factor(ListingCategory), y = BorrowerRate)) +
   geom_boxplot() + coord_flip() +
   labs(title = "Mean Borrower's Interest Rate by Listing Category") +
   labs(x = "Listing Category", y = "Borrower's interest rate")
-
-
 ```
+![pic20](/image/20.png)
+
 
 It seems that different types of listing get very different interest rates, and the difference between groups is suggested to be significant based on ANOVA:
 
-```{r echo=FALSE}
+```{r}
 # ANOVA for categorical variables
 fit <- aov(BorrowerRate~ListingCategory,data=newdata)
 summary(fit)
 ```
+![pic21](/image/21.png)
 
-```{r echo=FALSE}
+```{r}
 # LM for categorical variables
 fit <- lm(BorrowerRate~ListingCategory,data=newdata)
 summary(fit)
 ```
+![pic22](/image/22.png)
+
 However, with an adjusted R-squared 1.9%, listing category explains very little of the variance in interest rate.
 
 
 I am also curious how income levels would be associated with borrower's interest rate:
 
-```{r echo=FALSE}
-
-
-
+```{r}
 ggplot(newdata, aes(x=factor(IncomeRange),
                     y = BorrowerRate)) +
   geom_boxplot() + coord_flip() +
   labs(title = "Mean Borrower's Interest Rate by Income Range") +
   labs(x = "Income Range", y = "Borrower's interest rate")
-
-
 ```
+![pic23](/image/23.png)
 
-```{r echo=FALSE}
+
+```{r}
 # ANOVA for categorical variables
 fit <- aov(BorrowerRate~IncomeRange,data=newdata)
 summary(fit)
 ```
+![pic24](/image/24.png)
 
 
 
-
-```{r echo=FALSE}
+```{r}
 # ANOVA for categorical variables
 fit <- lm(BorrowerRate~IncomeRange,data=newdata)
 summary(fit)
 ```
+![pic25](/image/25.png)
+
 It is quite evident that people who are not employed have to pay highest interest rate. Among all income levels except for $0, the interest rate decreases as the income goes higher.The ANOVA also suggests that interest rate varies significantly between income levels. Income range can explain 4% of the variance in interest rate.
 
 
 I would also like to know how income range is associated with other variables:
 
-```{r echo=FALSE,warning=FALSE}
+```{r}
 newdata$IncomeRange =factor(newdata$IncomeRange,levels(newdata$IncomeRange)
                             [c(7,8,1,2,4,5,6,3)])
 
@@ -418,31 +397,27 @@ ggplot(newdata, aes(x=factor(IncomeRange),
   geom_boxplot() + coord_flip() +
   labs(title = "Borrower's Prosper Score by Income Range") +
   labs(x = "Income Range", y = "Prosper Score")
-
-
 ```
+![pic26](/image/26.png)
 
-
-```{r echo=FALSE,warning=FALSE}
+```{r}
 
 ggplot(newdata, aes(x=factor(IncomeRange),
                     y = CreditScoreRangeLower)) +
   geom_boxplot() + coord_flip() +
   labs(title = "Credit Score by Income Range") +
   labs(x = "Income Range", y = "Credit Score")
-
-
 ```
+![pic27](/image/27.png)
+
 
 It seems that borrowers with higher income also have higher Prosper score and credit score.
-
-
 
 Next, I also want to examine how numeric variables may affect borrower's interest rate.
 
 A correlation test is conducted among numeric variables first:
 
-```{r echo=FALSE}
+```{r}
 #can move the correlation to below before the continous part.
 # correlation for continuous variables
 myvars2<- c("ProsperScore","BorrowerRate","CreditScoreRangeLower", "LoanOriginalAmount",
@@ -450,18 +425,15 @@ myvars2<- c("ProsperScore","BorrowerRate","CreditScoreRangeLower", "LoanOriginal
 newdata2 <- prosper_loan[myvars2]
 
 round(cor(newdata2,use = "complete.obs"),3)
-
 ```
+![pic28](/image/28.png)
 
-
-```{r echo=FALSE,warning=FALSE,message=FALSE}
-
+```{r}
 library(GGally)
-
 ggpairs(newdata2)
 
 ```
-
+![pic29](/image/29.png)
 
 It seems that borrower's interest rate is more correlated to borrower's Prosper score, credit score and loan amount than other continuous variables. The higher the scores or loan amount is, the lower the interest rate is likely to be.
 
@@ -469,7 +441,7 @@ It seems that borrower's interest rate is more correlated to borrower's Prosper 
 
 Then, I'd like to check the relationship between borrower's interest rate and each continuous variable respectively:
 
-```{r echo=FALSE,warning=FALSE}
+```{r}
 #Prosper score is discrete, so factorize it:
 
 newdata$ProsperScore <- factor(newdata$ProsperScore,
@@ -479,97 +451,91 @@ ggplot(newdata,aes(x=ProsperScore, y = BorrowerRate)) +
   geom_boxplot() +
   labs(title = "Borrower's Interest Rate by Prosper Score") +
   labs(x = "Prosper Score", y = "Borrower's Interest Rate")  
-
-
 ```
+![pic30](/image/30.png)
 
 It is evident that as Prosper score increases, the mean borrower's interest rate decreases.
 
-```{r echo=FALSE}
-
+```{r}
 fit<-lm(BorrowerRate~ProsperScore,data=newdata)
 summary(fit)
-
 ```
+![pic31](/image/31.png)
 
 Prosper score can explain 43.98% of the variance in interest rate!
 
 
-```{r echo=FALSE,warning=FALSE}
+```{r}
 ggplot(newdata,aes(x=CreditScoreRangeLower, y = BorrowerRate)) +
   geom_point(alpha = 0.3) +
   labs(title = "Borrower's Interest Rate by Credit Score") +
   labs(x = "Credit Score", y = "Borrower's Interest Rate") +
   scale_x_continuous()
-
 ```
+![pic32](/image/32.png)
 
-```{r echo=FALSE}
-
+```{r}
 fit<-lm(BorrowerRate~CreditScoreRangeLower,data=newdata)
 summary(fit)
-
 ```
+![pic33](/image/33.png)
 
 Although the scatterplot does not show a clear pattern, the simple linear regression model suggests that credit score has a signicant effect on borrower's interest rate, and it can explain 21.3% of the variance in interest rate.
 
 
-```{r echo=FALSE}
+```{r}
 ggplot(newdata,aes(x=LoanOriginalAmount, y = BorrowerRate)) +
   geom_point(alpha = 0.3) +
   labs(title = "Borrower's Interest Rate by Loan Amount") +
   labs(x = "Loan Amount", y = "Borrower's Interest Rate")
-
 ```
+![pic34](/image/34.png)
 
 
-```{r echo=FALSE}
+```{r}
 
 fit<-lm(BorrowerRate~LoanOriginalAmount,data=newdata)
 summary(fit)
-
 ```
+![pic35](/image/35.png)
 
 Loan amount also has a negative, significant effect on borrower's interest rate, and can explain 10.8% of the variance in interest rate.
 
 
-```{r echo=FALSE}
+```{r}
 ggplot(newdata,aes(x=Term, y = BorrowerRate)) +
   geom_boxplot() +
   labs(title = "Borrower's Interest Rate by Loan Term") +
   labs(x = "Loan Term", y = "Borrower's Interest Rate")
-
 ```
+![pic36](/image/36.png)
 
-```{r echo=FALSE}
+```{r}
 
 fit<-lm(BorrowerRate~Term,data=newdata)
 summary(fit)
-
 ```
+![pic37](/image/37.png)
+
 Loan term is significant as well, but the R-squared is too small.
 
-
-```{r echo=FALSE,warning=FALSE}
+```{r}
 ggplot(newdata,aes(x=DebtToIncomeRatio, y = BorrowerRate)) +
   geom_point(alpha = 0.1) +
   labs(title = "Borrower's Interest Rate by Debt-to-Income Ratio") +
   labs(x = "Debt-to-Income Ratio (log)", y = "Borrower's Interest Rate") +
   scale_x_log10()
-
 ```
+![pic38](/image/38.png)
 
 
-```{r echo=FALSE}
-
+```{r}
 #need to use logx
-
 newdata$DTIRatio <- newdata$DebtToIncomeRatio+0.0000001
-
 fit<-lm(BorrowerRate~log(DTIRatio),data=newdata)
 summary(fit)
-
 ```
+![pic39](/image/39.png)
 
 Debt-to-income ratio has been transformed into log form, and is indicated to have significant effect on borrower's interest rate.The R-squared is as small as 1.9% though.
 
@@ -613,9 +579,8 @@ Therefore, I will focus on borrower's interest rate, Prosper score, credit score
 
 ## Multivariate Plots Section
 
-```{r echo=FALSE,warning=FALSE}
+```{r}
 # use heatmap for two discrete and one continuous
-
 newdata2 <- newdata[which(newdata$IncomeRange!='Not displayed'),]
 
 ggplot(newdata2,aes(x=ProsperScore, y = IncomeRange)) +
@@ -623,77 +588,74 @@ ggplot(newdata2,aes(x=ProsperScore, y = IncomeRange)) +
   scale_fill_gradient(low = "white", high = "steelblue") +
   labs(title = "Borrower's Interest Rate by Prosper Score and Income Range") +
   labs(x = "Prosper Score", y = "Income Range")
-
 ```
+![pic40](/image/40.png)
 
 The location of darker blue tiles shows that borrowers with high interst rate have low income and low Prosper score. On the contrary, the lighter tiles suggest that borrowers with low interest rate are more likely to have high income and high Prosper score.
 
 
 
-```{r echo=FALSE,warning=FALSE}
+```{r}
 ggplot(newdata2,aes(x=CreditScoreRangeLower, y = BorrowerRate, color = IncomeRange)) +
   geom_point(alpha=0.3)  +
   labs(title = "Borrower's Interest Rate by Credit Score and Income Range") +
   labs(x = "Credit Score", y = "Borrower's Interest Rate") +
   scale_color_brewer(type = 'seq', palette = 'Blues')
-
 ```
+![pic41](/image/41.png)
 
 Quite similar to Propser score, the concentration of more purple and pink points in the right bottom area indicates that higher income range is associated with higher credit score and lower borrower's interest rate.
 
 
 
-```{r echo=FALSE}
+```{r}
 ggplot(newdata2,aes(x=LoanOriginalAmount, y = BorrowerRate, color = IncomeRange)) +
   geom_point(alpha=0.5)  +
   labs(title = "Borrower's Interest Rate by Loan Amount and Income Range") +
   labs(x = "Loan Amount", y = "Borrower's Interest Rate") +
   scale_color_brewer(type = 'seq', palette = "Blues")
-
 ```
+![pic42](/image/42.png)
 
-```{r echo=FALSE}
+```{r}
 ggplot(newdata2,aes(x=LoanOriginalAmount, y = BorrowerRate)) +
   geom_point(alpha=0.05)  +
   labs(title = "Borrower's Interest Rate by Loan Amount and Income Range") +
   labs(x = "Loan Amount", y = "Borrower's Interest Rate") +
   facet_wrap(~IncomeRange, ncol=3)
-
 ```
+![pic43](/image/43.png)
 
 This also suggests that higher income range is associated with higher loan amount and lower interest rate.
 
 Based on exploring these variables and their relationship, I build a regression model:
 
-```{r echo=FALSE}
+```{r}
 
 fit<-lm(BorrowerRate~ProsperScore+CreditScoreRangeLower+
           IncomeRange+LoanOriginalAmount,data=newdata2)
 summary(fit)
-
-
 ```
+![pic44](/image/44.png)
 
 The coefficients are too small, because these quantitative variables are on very different scales. Therefore, I converted credit score and loan amount into smaller scale and re-run the regression model:
 
-```{r echo=FALSE,warning=FALSE,message=FALSE}
+```{r}
 newdata2$credit <- newdata2$CreditScoreRangeLower/100
 newdata2$loan <- newdata2$LoanOriginalAmount/10000
 
 #newdata$IncomeRange <- relevel(newdata$IncomeRange,"$0")
-
 #fit<-lm(BorrowerRate~credit+IncomeRange+loan,data=newdata)
 #summary(fit)
-
 library(memisc)
-
 m1 <- lm(BorrowerRate ~ ProsperScore, data = newdata2)
 m2 <- update(m1, ~ . + credit)
 m3 <- update(m2, ~ . + loan)
 m4 <- update(m3, ~ . + IncomeRange)
 mtable(m1, m2, m3, m4)
-
 ```
+
+![pic45](/image/45.png)
 
 The variables in the final model can account for 55.6% of the variance in borrower's interest rate.
 
@@ -724,17 +686,15 @@ Yes. The strength of the model is that the variables selected from the data can 
 
 
 #### Plot One
-```{r echo=FALSE, Plot_One}
+```{r}
 
 ggplot(newdata, aes(x=factor(IncomeRange),
                     y = BorrowerRate)) +
   geom_boxplot() + coord_flip() +
   labs(title = "Mean Borrower's Interest Rate by Income Range") +
   labs(x = "Income Range", y = "Borrower's interest rate")
-
-
 ```
-
+![pic46](/image/46.png)
 
 #### Description One
 
@@ -743,7 +703,7 @@ People who are not employed have to pay highest interest rate. Among all income 
 
 
 #### Plot Two
-```{r echo=FALSE, Plot_Two,warning=FALSE}
+```{r}
 
 
 ggplot(newdata2,aes(x=ProsperScore, y = IncomeRange)) +
@@ -752,22 +712,21 @@ ggplot(newdata2,aes(x=ProsperScore, y = IncomeRange)) +
   labs(title = "Borrower's Interest Rate by Prosper Score and Income Range") +
   labs(x = "Prosper Score", y = "Income Range")
 ```
-
+![pic47](/image/47.png)
 
 #### Description Two
 Borrowers with higher Prosper score tend to have lower interest rate. In addition, those who have high Prosper score and low interest rate are mostly from the high-income groups.
 
 
 #### Plot Three
-```{r echo=FALSE, Plot_Three}
+```{r}
 ggplot(newdata2,aes(x=LoanOriginalAmount, y = BorrowerRate)) +
   geom_point(alpha=0.05)  +
   labs(title = "Borrower's Interest Rate by Loan Amount and Income Range") +
   labs(x = "Loan Amount", y = "Borrower's Interest Rate") +
   facet_wrap(~IncomeRange, ncol=3)
-
 ```
-
+![pic48](/image/48.png)
 
 #### Description Three
 For all income ranges, the range of interest rates narrows as loan amount increases.Larger loan amount is more likely to associate with lower interest rate.
