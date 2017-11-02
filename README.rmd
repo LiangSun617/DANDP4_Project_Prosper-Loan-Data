@@ -19,7 +19,7 @@ prosper_loan <- read.csv("prosperLoanData.csv")
 dim(prosper_loan)
 ```
 
-![pic1](/image/1.png)
+![pic1](\image\1.png)
 
 
 ```{r}
